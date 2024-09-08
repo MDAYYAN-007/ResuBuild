@@ -1,6 +1,6 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Template1 from '@/components/Template1';
 
 const ResumePage = ({ params }) => {
@@ -31,9 +31,11 @@ const ResumePage = ({ params }) => {
     };
 
     return (
-        <div>
-            {formData ? renderTemplate() : <p>Loading...</p>}
-        </div>
+        <Suspense>
+            <div>
+                {formData ? renderTemplate() : <p>Loading...</p>}
+            </div>
+        </Suspense>
     );
 };
 
