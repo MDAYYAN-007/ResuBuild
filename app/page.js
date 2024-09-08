@@ -18,7 +18,7 @@ export default function Home() {
             <p className="text-lg mb-8 max-w-lg text-gray-300">
               Create your resume in just 5 minutes with our easy-to-use platform.
               Choose from a variety of professional templates, fill in your details,
-              and get a polished resume ready to download. It's quick, simple, and hassle-free!
+              and get a polished resume ready to download. It&apos;s quick, simple, and hassle-free!
             </p>
             <Link
               href="/introduction"

@@ -51,7 +51,6 @@ const Template1 = ({ formData, id }) => {
                                 {formData?.profile?.no && formData.profile.no}
                             </p>
                         )}
-
                     </header>
 
                     {formData?.profile?.summary && (
