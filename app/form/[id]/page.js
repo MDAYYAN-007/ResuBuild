@@ -15,6 +15,7 @@ const TextInput = ({ name, control, placeholder, rules, type }) => (
                 <input
                     type={type}
                     {...field}
+
                     autoComplete="off"
                     placeholder=""
                     className="block py-3 px-2 w-full text-white bg-transparent border-0 border-b-2 border-gray-600 appearance-none dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-teal-600 peer"
@@ -46,8 +47,8 @@ const UserForm = ({ params }) => {
             },
             education: [{ course: '', year: '', marks: '', institution: '', place: '' }],
             experience: [{ company: '', duration: '', jobTitle: '' }],
-            projects: [{ name: '', toolsAndLang: ''}],
-            awards: [{ name: '', desc: '' }],
+            projects: [{ name: '', toolsAndLang: '', proDesc: '' }],
+            certifications: [{ name: '', desc: '' }],
             skills: [{ category: '', skills: [''] }],
             template: '1'
         }
@@ -59,6 +60,7 @@ const UserForm = ({ params }) => {
     useEffect(() => {
         if (id) {
             const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
+
             const currentResume = existingResumes.find(resume => resume.id === id);
 
             if (!currentResume) {
@@ -68,6 +70,43 @@ const UserForm = ({ params }) => {
             }
         }
     }, [id]);
+
+    useEffect(() => {
+        if (formData) {
+            Object.keys(formData).forEach((section) => {
+                if (Array.isArray(formData[section])) {
+                    if (formData[section].length > (section === 'projects' ? projectFields.length : 0)) {
+                        formData[section].slice(projectFields.length).forEach((item) => {
+                            if (section === 'projects') {
+                                appendProject(item);
+                            } else if (section === 'education') {
+                                appendEducation(item);
+                            } else if (section === 'experience') {
+                                appendExperience(item);
+                            } else if (section === 'certifications') {
+                                appendCertification(item);
+                            } else if (section === 'skills') {
+                                appendCategory(item);
+                            }
+                        });
+                    }
+
+                    // Set values for existing fields
+                    formData[section].forEach((item, index) => {
+                        Object.keys(item).forEach((field) => {
+                            setValue(`${section}[${index}].${field}`, item[field]);
+                        });
+                    });
+                } else {
+                    // Handle non-array sections
+                    Object.keys(formData[section]).forEach((field) => {
+                        setValue(`${section}.${field}`, formData[section][field]);
+                    });
+                }
+            });
+        }
+    }, [formData, setValue]);
+
 
 
     const { fields: educationFields, append: appendEducation, remove: removeEducation } = useFieldArray({
@@ -90,13 +129,13 @@ const UserForm = ({ params }) => {
         name: "projects"
     });
 
-    const { fields: awardFields, append: appendAward, remove: removeAward } = useFieldArray({
+    const { fields: certificationFields, append: appendCertification, remove: removeCertification } = useFieldArray({
         control,
-        name: "awards"
+        name: "certifications"
     });
 
     const [activeSection, setActiveSection] = useState('template');
-    const sections = ['template', 'profile', 'education', 'skills', 'experience', 'projects', 'awards'];
+    const sections = ['template', 'profile', 'education', 'skills', 'experience', 'projects', 'certifications'];
     const currentIndex = sections.indexOf(activeSection);
 
     const saveDraft = (data) => {
@@ -115,7 +154,6 @@ const UserForm = ({ params }) => {
         );
         localStorage.setItem('resumes', JSON.stringify(updatedResumes));
         setFormData(data);
-        console.log(formData)
         router.push(`/resume/${id}?template=${formData.template}`);
     };
 
@@ -370,6 +408,12 @@ const UserForm = ({ params }) => {
                                     placeholder="Tools and Languages"
                                     type="text"
                                 />
+                                <TextInput
+                                    name={`projects[${index}].proDesc`}
+                                    control={control}
+                                    placeholder="Description"
+                                    type="text"
+                                />
                                 {projectFields.length > 1 && (
                                     <button
                                         type="button"
@@ -390,27 +434,27 @@ const UserForm = ({ params }) => {
                         </button>
                     </div>
                 );
-            case 'awards':
+            case 'certifications':
                 return (
                     <div className="space-y-6">
-                        {awardFields.map((item, index) => (
+                        {certificationFields.map((item, index) => (
                             <div key={item.id} className="relative border border-gray-600 p-4 rounded-xl hover:border-teal-700">
                                 <TextInput
-                                    name={`awards[${index}].name`}
+                                    name={`certifications[${index}].name`}
                                     control={control}
-                                    placeholder="Award Name"
+                                    placeholder="Certification Name"
                                     type="text"
                                 />
                                 <TextInput
-                                    name={`awards[${index}].desc`}
+                                    name={`certifications[${index}].desc`}
                                     control={control}
                                     placeholder="Description"
                                     type="text"
                                 />
-                                {awardFields.length > 1 && (
+                                {certificationFields.length > 1 && (
                                     <button
                                         type="button"
-                                        onClick={() => removeAward(index)}
+                                        onClick={() => removeCertification(index)}
                                         className="absolute top-0 right-0 p-2 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
                                     >
                                         <FaTrash className="w-5 h-5" />
@@ -420,10 +464,10 @@ const UserForm = ({ params }) => {
                         ))}
                         <button
                             type="button"
-                            onClick={() => appendAward({ name: '', link: '' })}
+                            onClick={() => appendCertification({ name: '', link: '' })}
                             className="py-2 px-4 rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition-all duration-300 ease-in-out"
                         >
-                            + Add Another Award
+                            + Add Another Certification
                         </button>
                     </div>
                 );

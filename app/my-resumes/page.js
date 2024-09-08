@@ -34,7 +34,9 @@ const ResumeDashboard = () => {
     return (
         <>
             <Navbar />
-            <section className='py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-100 flex flex-col items-center justify-center mt-[70px]'>
+            <section className='py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-100 flex flex-col items-center justify-center mt-[70px]'
+                style={{ minHeight: "calc(100vh - 70px)" }}
+            >
                 <h1 className="text-2xl font-bold mb-4">Resume Dashboard</h1>
                 <button
                     onClick={createNewResume}
@@ -44,7 +46,7 @@ const ResumeDashboard = () => {
                 </button>
                 <div className="mt-8">
                     {message && (
-                         <p className="mb-4">No resume found with the provided ID. Please create a new one.</p>
+                        <p className="mb-4">No resume found with the provided ID. Please create a new one.</p>
                     )}
                     {resumes.length > 0 ? (
                         <ul>
