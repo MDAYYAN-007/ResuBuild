@@ -1,0 +1,14 @@
+@page {
+    margin: 0;
+}
+
+@media print {
+    body, html {
+        margin: 0;
+        padding: 0;
+    }
+
+    section {
+        margin-top: 0;
+    }
+}
