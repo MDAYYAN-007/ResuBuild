@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { useSearchParams } from 'next/navigation';
@@ -32,7 +32,7 @@ const ResumeDashboard = () => {
     };
 
     return (
-        <>
+        <Suspense>
             <Navbar />
             <section className='py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-100 flex flex-col items-center justify-center mt-[70px]'
                 style={{ minHeight: "calc(100vh - 70px)" }}
@@ -63,7 +63,7 @@ const ResumeDashboard = () => {
                     )}
                 </div>
             </section>
-        </>
+        </Suspense>
     );
 };
 
