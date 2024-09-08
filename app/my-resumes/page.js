@@ -2,13 +2,10 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 
 const ResumeDashboard = () => {
     const [resumes, setResumes] = useState([]);
-    const searchParams = useSearchParams();
-    const message = searchParams.get('message');
     const router = useRouter();
 
     useEffect(() => {
@@ -36,7 +33,7 @@ const ResumeDashboard = () => {
     };
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <>
             <Navbar />
             <section className='py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-100 flex flex-col items-center justify-center mt-[70px]'
                 style={{ minHeight: "calc(100vh - 70px)" }}
@@ -49,9 +46,6 @@ const ResumeDashboard = () => {
                     Create New Resume
                 </button>
                 <div className="mt-8">
-                    {message && (
-                        <p className="mb-4">No resume found with the provided ID. Please create a new one.</p>
-                    )}
                     {resumes.length > 0 ? (
                         <ul>
                             {resumes.map((resume, index) => (
@@ -67,7 +61,7 @@ const ResumeDashboard = () => {
                     )}
                 </div>
             </section>
-        </Suspense>
+        </>
     );
 };
 

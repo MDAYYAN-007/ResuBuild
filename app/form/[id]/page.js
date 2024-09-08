@@ -64,7 +64,7 @@ const UserForm = ({ params }) => {
             const currentResume = existingResumes.find(resume => resume.id === id);
 
             if (!currentResume) {
-                router.push('/my-resumes?message=No resume found with the provided ID');
+                router.push('/my-resumes');
             } else if (currentResume.formData) {
                 setFormData(currentResume.formData);
             }
