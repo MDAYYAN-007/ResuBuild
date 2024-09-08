@@ -5,8 +5,12 @@ import '@/components/Templates.css';
 import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 
-const Template1 = ({ formData, id }) => {
+const Template1 = (params) => {
     const router = useRouter();
+
+    console.log(params)
+    const id = params.id;
+    const formData = params.formData;
 
     const handleDownload = () => {
         window.print();
@@ -39,7 +43,7 @@ const Template1 = ({ formData, id }) => {
                     </button>
                 </div>
 
-                <div className="min-w-[793px] mx-auto bg-white p-8 relative print:p-0">
+                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0">
                     {/* Header */}
                     <header className="mb-6 text-center">
                         <h1 className="text-4xl font-bold font-noto">{formData?.profile?.name}</h1>
