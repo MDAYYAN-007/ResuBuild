@@ -46,7 +46,7 @@ const Template1 = (params) => {
                     </Link>
                 </div>
 
-                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0">
+                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-scroll">
                     {/* Header */}
                     <header className="mb-6 text-center">
                         <h1 className="text-4xl font-bold font-noto">{formData?.profile?.name}</h1>

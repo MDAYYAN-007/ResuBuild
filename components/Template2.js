@@ -46,7 +46,7 @@ const Template2 = (params) => {
                     </Link>
                 </div>
 
-                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0">
+                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-scroll">
                     {/* Header Section */}
                     {profile && (
                         <header className="mb-8">
@@ -103,46 +103,43 @@ const Template2 = (params) => {
                             )}
 
                             {/* Skills */}
-                            {skills && skills.some(skillCategory =>
-                                skillCategory.skills.some(skill => skill.trim() !== '')
-                            ) && (
-                                    <div className="mb-4">
-                                        <h2 className="text-2xl font-bold text-teal-600 font-playpen">Skills</h2>
-                                        <div className="overflow-x-auto">
-                                            <table className="min-w-full table-auto">
-                                                <thead>
-                                                    <tr>
-                                                        <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Category</th>
-                                                        <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Skills</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {skills.map((skillCategory, index) => (
-                                                        skillCategory.skills.some(skill => skill.trim() !== '') && ( // Only render if there are non-empty skills
-                                                            <tr key={index} className="border-t">
-                                                                <td className="px-4 py-2 font-semibold font-balsamiq">{skillCategory.category}</td>
-                                                                <td className="px-4 py-2">
-                                                                    <div className="flex flex-wrap gap-2">
-                                                                        {skillCategory.skills.map((skill, idx) => (
-                                                                            skill.trim() !== '' && ( // Only display non-empty skills
-                                                                                <span
-                                                                                    key={idx}
-                                                                                    className="inline-block bg-gray-100 text-black px-2 py-1 rounded-lg font-crimson text-sm"
-                                                                                >
-                                                                                    {skill}
-                                                                                </span>
-                                                                            )
-                                                                        ))}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                            {skills && skills.some(skillCategory => skillCategory.skills.length > 0) && (
+                                <div className="mb-4">
+                                    <h2 className="text-2xl font-bold text-teal-600 font-playpen">Skills</h2>
+                                    <div className="overflow-x-auto">
+                                        <table className="min-w-full table-auto">
+                                            <thead>
+                                                <tr>
+                                                    <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Category</th>
+                                                    <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Skills</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {skills.map((skillCategory, index) => (
+                                                    skillCategory.skills.length > 0 && (
+                                                        <tr key={index} className="border-t">
+                                                            <td className="px-4 py-2 font-semibold font-balsamiq">{skillCategory.category}</td>
+                                                            <td className="px-4 py-2">
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {skillCategory.skills.map((skill, idx) => (
+                                                                        <span
+                                                                            key={idx}
+                                                                            className="inline-block bg-gray-100 text-black px-2 py-1 rounded-lg font-crimson text-sm"
+                                                                        >
+                                                                            {skill}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
-                                )}
+                                </div>
+                            )}
+
                         </div>
                         {/* Right Section (6/10) */}
                         <div className="w-3/5">
