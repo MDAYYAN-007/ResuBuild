@@ -1,41 +1,49 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Template1 from '@/components/Template1';
+import Loading from '@/components/Loading';
+import Template2 from '@/components/Template2';
+import Template3 from '@/components/Template3';
 
 const ResumePage = ({ params }) => {
-    const searchParams = useSearchParams();
-    const tempid = searchParams.get('template');
     const [formData, setFormData] = useState(null);
-
+    const [tempid, setTempid] = useState(null);
+    const router = useRouter();
     const id = params.id;
 
     useEffect(() => {
-        if (id) {
+        if (!id) return;
+
+        try {
             const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
             const currentResume = existingResumes.find(resume => resume.id === id);
 
             if (currentResume && currentResume.formData) {
                 setFormData(currentResume.formData);
+                const templateId = currentResume.formData.template;
+                setTempid(templateId);
             } else {
                 router.push('/my-resumes?message=No resume found');
             }
+        } catch (error) {
+            console.error('Error fetching resume data:', error);
+            router.push('/my-resumes?message=Error fetching data');
         }
-    }, [id]);
+    }, [id, router]);
 
-    const renderTemplate = () => {
-        switch (tempid) {
-            case '1':
-                return <Template1 formData={formData} id={id} />;
-        }
+    const templateComponents = {
+        1: Template1,
+        2: Template2,
+        3: Template3
     };
 
+    const TemplateComponent = templateComponents[tempid] || (() => <div>Template Not Found</div>);
+
     return (
-        
-            <div>
-                {formData ? renderTemplate() : <p>Loading...</p>}
-            </div>
-        
+        <div>
+            {formData ? <TemplateComponent formData={formData} id={id} /> : <Loading />}
+        </div>
     );
 };
 

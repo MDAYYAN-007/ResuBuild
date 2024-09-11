@@ -1,23 +1,17 @@
 'use client';
 import React from 'react';
-import { AiOutlineDownload, AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlineDownload, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
 import '@/components/Templates.css';
 import Navbar from '@/components/Navbar';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Template1 = (params) => {
-    const router = useRouter();
 
-    console.log(params)
     const id = params.id;
     const formData = params.formData;
 
     const handleDownload = () => {
         window.print();
-    };
-
-    const handleEdit = () => {
-        router.push(`/form/${id}`);
     };
 
     return (
@@ -26,28 +20,35 @@ const Template1 = (params) => {
             <section className='mt-[70px] pb-28 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 print:mt-0 print:pb-0'
                 style={{ minHeight: "calc(100vh - 70px)" }}
             >
-                <div className="flex p-8 justify-center mb-6 space-x-4 print:hidden">
-                    <button
-                        onClick={handleEdit}
-                        className='bg-gray-800 text-white px-4 py-2 rounded flex items-center space-x-2'
+                <div className="flex gap-4 mx-auto p-8 justify-center mb-6 print:hidden max-xsm:flex-col max-xsm:w-max">
+                    <Link
+                        href={`/form/${id}`}
+                        className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-teal-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300"
                     >
-                        <AiOutlineEdit />
+                        <AiOutlineEdit className="text-lg" />
                         <span>Edit</span>
-                    </button>
+                    </Link>
                     <button
                         onClick={handleDownload}
-                        className='bg-blue-500 text-white px-4 py-2 rounded flex items-center space-x-2'
+                        className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-purple-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-300"
                     >
-                        <AiOutlineDownload />
+                        <AiOutlineDownload className="text-lg" />
                         <span>Download PDF</span>
                     </button>
+                    <Link
+                        href={"/my-resumes"}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-indigo-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    >
+                        <AiOutlineFileSearch className="text-lg" />
+                        <span>View Resumes</span>
+                    </Link>
                 </div>
+
 
                 <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0">
                     {/* Header */}
                     <header className="mb-6 text-center">
                         <h1 className="text-4xl font-bold font-noto">{formData?.profile?.name}</h1>
-                        {/* <p className='text-lg font-noto'>{formData?.profile?.profession}</p> */}
                         {(formData?.profile?.email || formData?.profile?.no) && (
                             <p className="text-lg font-noto">
                                 {formData?.profile?.email && formData.profile.email}
@@ -96,7 +97,10 @@ const Template1 = (params) => {
                                         <h3 className="text-xl font-semibold">{exp.jobTitle}</h3>
                                         <p className='text-right'>{exp.company}</p>
                                     </div>
-                                    <p className="text-sm font-crimson">{exp.duration}</p>
+                                    <p className="text-sm font-crimson text-gray-600">{exp.duration}</p>
+                                    {exp.jobDesc && (
+                                        <li className='font-lora'>{exp.jobDesc}</li>
+                                    )}
                                 </div>
                             ))}
                         </section>
@@ -109,7 +113,7 @@ const Template1 = (params) => {
                             {formData.projects.map((project, index) => (
                                 <div className="mb-2" key={index}>
                                     <h3 className="text-xl font-semibold">{project.name}</h3>
-                                    <p className='font-noto'>{project.toolsAndLang}</p>
+                                    <p className='font-noto text-gray-600'>{project.toolsAndLang}</p>
                                     {project.proDesc && (
                                         <li className='font-lora'>{project.proDesc}</li>
                                     )}

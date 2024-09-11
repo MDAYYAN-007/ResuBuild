@@ -20,6 +20,18 @@ module.exports = {
         lora: ['Lora', 'serif'],
         noto: ['Noto Serif', 'serif'],
         crimson: ['Crimson Pro', 'serif'],
+        playpen: ['Playpen Sans', 'serif'],
+        balsamiq: ['Balsamiq Sans', 'serif'],
+      },
+      screens: {
+        'max-2xl': { 'max': '1535px' },
+        'max-xl': { 'max': '1200px' },
+        'max-lg': { 'max': '1000px' },
+        'max-md': { 'max': '820px' },
+        'max-sm': { 'max': '639px' },
+        'max-xsm': { 'max': '500px' },
+        'max-vxsm': { 'max': '390px' },
+        'max-vvxsm': { 'max': '360px' },
       },
       keyframes: {
         "accordion-down": {

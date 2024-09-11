@@ -5,6 +5,8 @@ import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import './form.css'
+import Loading from '@/components/Loading';
+import Image from 'next/image';
 
 const TextInput = ({ name, control, placeholder, rules, type }) => (
     <Controller
@@ -34,7 +36,7 @@ const TextInput = ({ name, control, placeholder, rules, type }) => (
 
 
 const UserForm = ({ params }) => {
-
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState(null);
     const { control, handleSubmit, setValue, watch } = useForm({
         defaultValues: {
@@ -46,11 +48,11 @@ const UserForm = ({ params }) => {
                 summary: ''
             },
             education: [{ course: '', year: '', marks: '', institution: '', place: '' }],
-            experience: [{ company: '', duration: '', jobTitle: '' }],
+            experience: [{ company: '', duration: '', jobTitle: '', jobDesc: '' }],
             projects: [{ name: '', toolsAndLang: '', proDesc: '' }],
             certifications: [{ name: '', desc: '' }],
             skills: [{ category: '', skills: [''] }],
-            template: '1'
+            template: ''
         }
     });
 
@@ -58,18 +60,31 @@ const UserForm = ({ params }) => {
     const id = params.id;
 
     useEffect(() => {
-        if (id) {
-            const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
+        setLoading(true);
 
-            const currentResume = existingResumes.find(resume => resume.id === id);
+        const loadData = async () => {
+            try {
+                if (id) {
+                    const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
 
-            if (!currentResume) {
-                router.push('/my-resumes');
-            } else if (currentResume.formData) {
-                setFormData(currentResume.formData);
+                    const currentResume = existingResumes.find(resume => resume.id === id);
+
+                    if (!currentResume) {
+                        router.push('/my-resumes');
+                    } else if (currentResume.formData) {
+                        setFormData(currentResume.formData);
+                    }
+                }
+            } finally {
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
             }
-        }
-    }, [id]);
+        };
+
+        loadData();
+    }, [id, router]);
+
 
     useEffect(() => {
         if (formData) {
@@ -107,8 +122,6 @@ const UserForm = ({ params }) => {
         }
     }, [formData, setValue]);
 
-
-
     const { fields: educationFields, append: appendEducation, remove: removeEducation } = useFieldArray({
         control,
         name: "education"
@@ -139,6 +152,9 @@ const UserForm = ({ params }) => {
     const currentIndex = sections.indexOf(activeSection);
 
     const saveDraft = (data) => {
+        if (!data.template) {
+            data.template = 1;
+        }
         const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
         const updatedResumes = existingResumes.map(resume =>
             resume.id === id ? { ...resume, formData: data } : resume
@@ -148,13 +164,16 @@ const UserForm = ({ params }) => {
     };
 
     const onSubmit = (data) => {
+        if (!data.template) {
+            data.template = 1;
+        }
         const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
         const updatedResumes = existingResumes.map(resume =>
             resume.id === id ? { ...resume, formData: data } : resume
         );
         localStorage.setItem('resumes', JSON.stringify(updatedResumes));
         setFormData(data);
-        router.push(`/resume/${id}?template=${formData.template}`);
+        router.push(`/resume/${id}`);
     };
 
     const handleNext = () => {
@@ -170,10 +189,24 @@ const UserForm = ({ params }) => {
     };
 
     const templates = [
-        { id: 1, name: 'Classic Resume', image: '/images/classic-resume.png' },
-        { id: 2, name: 'Modern Resume', image: '/images/modern-resume.png' },
-        { id: 3, name: 'Creative Resume', image: '/images/creative-resume.png' },
+        { id: 1, name: 'Classic Resume', image: '/resume.png' },
+        { id: 2, name: 'Modern Resume', image: '/resume-2.png' },
+        { id: 3, name: 'Creative Resume', image: '/resume-3.png' },
     ];
+
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+    // Open modal with selected template
+    const handleOpenModal = (template) => {
+        setSelectedTemplate(template);
+        setModalOpen(true);
+    };
+
+    // Close modal function
+    const closeModal = () => {
+        setModalOpen(false);
+    };
 
     const renderFormSection = () => {
         switch (activeSection) {
@@ -251,10 +284,10 @@ const UserForm = ({ params }) => {
                                     <button
                                         type="button"
                                         onClick={() => removeEducation(index)}
-                                        className="absolute top-0 right-0 p-2 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
+                                        className="absolute top-0 right-0 p-1 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
                                         title='Delete'
                                     >
-                                        <FaTrash className="w-5 h-5" />
+                                        <FaTrash className="w-4 h-4" />
                                     </button>
                                 )}
                             </div>
@@ -308,9 +341,9 @@ const UserForm = ({ params }) => {
                                                                     updatedSkills.splice(skillIndex, 1);
                                                                     field.onChange(updatedSkills);
                                                                 }}
-                                                                className="absolute top-0 right-0 p-2 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
+                                                                className="absolute top-0 right-0 p-1 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
                                                             >
-                                                                <FaTrash className="w-5 h-5" />
+                                                                <FaTrash className="w-4 h-4" />
                                                             </button>
                                                         )}
                                                     </div>
@@ -330,10 +363,10 @@ const UserForm = ({ params }) => {
                                     <button
                                         type="button"
                                         onClick={() => removeCategory(index)}
-                                        className="absolute top-0 right-0 p-2 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
+                                        className="absolute top-0 right-0 p-1 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
                                         title='Delete'
                                     >
-                                        <FaTrash className="w-5 h-5" />
+                                        <FaTrash className="w-4 h-4" />
                                     </button>
                                 )}
                             </div>
@@ -370,14 +403,20 @@ const UserForm = ({ params }) => {
                                     placeholder="Job Title"
                                     type="text"
                                 />
+                                <TextInput
+                                    name={`experience[${index}].jobDesc`}
+                                    control={control}
+                                    placeholder="Job Description"
+                                    type="text"
+                                />
                                 {experienceFields.length > 1 && (
                                     <button
                                         type="button"
                                         onClick={() => removeExperience(index)}
-                                        className="absolute top-0 right-0 p-2 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
+                                        className="absolute top-0 right-0 p-1 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
                                         title='Delete'
                                     >
-                                        <FaTrash className="w-5 h-5" />
+                                        <FaTrash className="w-4 h-4" />
                                     </button>
                                 )}
                             </div>
@@ -418,9 +457,9 @@ const UserForm = ({ params }) => {
                                     <button
                                         type="button"
                                         onClick={() => removeProject(index)}
-                                        className="absolute top-0 right-0 p-2 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
+                                        className="absolute top-0 right-0 p-1 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
                                     >
-                                        <FaTrash className="w-5 h-5" />
+                                        <FaTrash className="w-4 h-4" />
                                     </button>
                                 )}
                             </div>
@@ -455,9 +494,9 @@ const UserForm = ({ params }) => {
                                     <button
                                         type="button"
                                         onClick={() => removeCertification(index)}
-                                        className="absolute top-0 right-0 p-2 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
+                                        className="absolute top-0 right-0 p-1 text-gray-400 border-b border-l rounded-md hover:text-teal-500 transition-all duration-300 ease-in-out"
                                     >
-                                        <FaTrash className="w-5 h-5" />
+                                        <FaTrash className="w-4 h-4" />
                                     </button>
                                 )}
                             </div>
@@ -473,27 +512,93 @@ const UserForm = ({ params }) => {
                 );
             default:
                 return (
-                    <div className="flex flex-wrap justify-center gap-10">
-                        {templates.map(template => (
-                            <div
-                                key={template.id}
-                                className={`bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-lg w-80 rounded-lg shadow-xl overflow-hidden flex flex-col items-center justify-center border ${watch('template') === template.id ? 'border-teal-700' : 'border-gray-600'} transform hover:-translate-y-2 transition-all duration-300`}
-                                onClick={() => setValue('template', template.id)}
-                            >
-                                <img
-                                    src={template.image}
-                                    alt={template.name}
-                                    className="w-full h-56 object-cover transition-transform duration-300 ease-in-out transform hover:scale-105"
-                                />
-                                <div className="p-6 text-center flex justify-center flex-col">
-                                    <h2 className="text-3xl font-semibold mb-4 text-teal-400">{template.name}</h2>
+                    <>
+                        {/* Template selection grid */}
+                        <div className="flex flex-wrap justify-center gap-10">
+                            {templates.map((template) => (
+                                <div
+                                    key={template.id}
+                                    className={`bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-lg w-72 rounded-lg shadow-xl overflow-hidden flex flex-col items-center justify-between border ${watch('template') === template.id ? 'border-teal-700' : 'border-gray-600'} transform transition-all duration-300 p-4`}
+                                >
+                                    {/* Image triggers modal */}
+                                    < Image
+                                        src={template.image}
+                                        alt={template.name}
+                                        width={200}
+                                        height={256}
+                                        className="w-full h-64 object-cover object-top transition-transform duration-300 ease-in-out transform hover:scale-105 mb-4 cursor-pointer rounded-lg"
+                                        onClick={() => handleOpenModal(template)} // Click to open modal
+                                    />
+                                    <h2
+                                        className="text-xl font-semibold text-white bg-gradient-to-r from-teal-500 via-teal-600 to-teal-700 px-4 py-2 rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl cursor-pointer"
+                                        onClick={() => setValue('template', template.id)}
+                                    >
+                                        {template.name}
+                                    </h2>
+                                    <input
+                                        type="radio"
+                                        value={template.id}
+                                        checked={watch('template') === template.id}
+                                        onChange={() => setValue('template', template.id)}
+                                        className="hidden"
+                                        aria-label={`Select template ${template.name}`}
+                                    />
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div >
+
+                        {/* Modal */}
+                        {
+                            isModalOpen && (
+                                <div className="fixed z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full flex items-center justify-center">
+                                    <div className="relative mx-auto shadow-xl rounded-md bg-white max-w-lg">
+                                        {/* Modal close button */}
+                                        <div className="flex justify-end p-2">
+                                            <button
+                                                onClick={closeModal}
+                                                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                                            >
+                                                <svg
+                                                    className="w-5 h-5"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                        clipRule="evenodd"
+                                                    ></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        {/* Modal content: Large Image */}
+                                        <div className="p-6 pt-0 text-center">
+                                            {selectedTemplate && (
+                                                <>
+                                                    <Image
+                                                        src={selectedTemplate.image}
+                                                        alt={selectedTemplate.name}
+                                                        width={400} // Set the appropriate width for larger image
+                                                        height={512} // Set the appropriate height for larger image
+                                                        className="w-full h-auto object-cover rounded-lg"
+                                                    />
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </>
                 );
         }
     };
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <>
@@ -501,72 +606,119 @@ const UserForm = ({ params }) => {
             <>
                 <section className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 text-gray-100 p-8 mt-16">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="flex flex-col space-y-6">
-                            <div className="flex flex-col bg-opacity-80 backdrop-blur-md rounded-lg shadow-lg p-4">
-                                <div className="flex gap-6">
-                                    <div className="w-1/4 p-4 space-y-4 sticky top-28 self-start bg-gray-800 rounded-lg">
-                                        {sections.map(section => (
+                        <div className="flex flex-col bg-opacity-80 backdrop-blur-md rounded-lg p-4">
+                            <div className="flex gap-6 max-md:flex-col justify-center items-center">
+                                <div className="w-1/4 p-4 flex flex-col gap-4 items-center justify-center sticky top-28 self-start bg-gray-800 rounded-lg max-lg:w-1/3 max-md:hidden" >
+                                    {sections.map(section => (
+                                        <button
+                                            key={section}
+                                            type="button"
+                                            className={`w-52 py-3 px-5 rounded-lg font-medium transition-colors ${activeSection === section ? 'bg-teal-600 text-white' : 'bg-gray-700 text-gray-300 border border-gray-500 hover:bg-gray-600'}`}
+                                            onClick={() => setActiveSection(section)}
+                                        >
+                                            {section.charAt(0).toUpperCase() + section.slice(1)}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="w-3/4 p-6 bg-gray-800 rounded-lg max-lg:2/3 max-md:w-full">
+                                    {renderFormSection()}
+                                    <div className="flex flex-col justify-around mx-auto mt-8 space-y-4 w-full">
+                                        <div className="relative w-full h-2 bg-gray-600 rounded-full overflow-hidden">
+                                            <div
+                                                className="absolute top-0 left-0 h-full bg-teal-600 rounded-full transition-all duration-300 ease-in-out"
+                                                style={{ width: `${((currentIndex + 1) / sections.length) * 100}%` }}
+                                            ></div>
+                                        </div>
+                                        <div className="flex justify-between space-x-4">
                                             <button
-                                                key={section}
                                                 type="button"
-                                                className={`w-full py-3 px-5 rounded-lg font-medium transition-colors ${activeSection === section ? 'bg-teal-600 text-white' : 'bg-gray-700 text-gray-300 border border-gray-500 hover:bg-gray-600'}`}
-                                                onClick={() => setActiveSection(section)}
+                                                onClick={handlePrev}
+                                                className={`py-1 px-4 rounded-lg bg-white/10 backdrop-blur-lg text-white font-semibold hover:bg-white/20 transition-all duration-300 ease-in-out shadow-lg transform active:scale-95 border border-white/20`}
+                                                disabled={currentIndex === 0}
                                             >
-                                                {section.charAt(0).toUpperCase() + section.slice(1)}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <div className="w-3/4 p-6 bg-gray-800 rounded-lg">
-                                        {renderFormSection()}
-                                        <div className="flex flex-col justify-around mx-auto mt-8 space-y-4 w-[50%]">
-                                            <div className="relative w-full h-2 bg-gray-600 rounded-full overflow-hidden">
-                                                <div
-                                                    className="absolute top-0 left-0 h-full bg-teal-600 rounded-full transition-all duration-300 ease-in-out"
-                                                    style={{ width: `${((currentIndex + 1) / sections.length) * 100}%` }}
-                                                ></div>
-                                            </div>
-                                            <div className="flex justify-between space-x-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={handlePrev}
-                                                    className={`py-1 px-4 rounded-lg bg-white/10 backdrop-blur-lg text-white font-semibold hover:bg-white/20 transition-all duration-300 ease-in-out shadow-lg transform active:scale-95 border border-white/20`}
-                                                    disabled={currentIndex === 0}
-                                                >
-                                                    <svg className="w-6 h-6 text-white mr-2 inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12l4-4m-4 4 4 4" />
-                                                    </svg>
-                                                    Prev
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleNext}
-                                                    className={`py-1 px-4 rounded-lg bg-white/10 backdrop-blur-lg text-white font-semibold hover:bg-white/20 transition-all duration-300 ease-in-out shadow-lg transform active:scale-95 border border-white/20`}
-                                                    disabled={currentIndex === sections.length - 1}
-                                                >
-                                                    Next
-                                                    <svg className="w-6 h-6 text-white ml-2 inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4-4m4 4-4 4" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button type="submit" className="px-6 py-2 mt-6 mx-auto block bg-teal-600 text-white rounded-lg text-lg font-semibold hover:bg-teal-700 transition-all duration-300">
-                                                Generate Resume
+                                                <svg className="w-6 h-6 text-white mr-2 inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12l4-4m-4 4 4 4" />
+                                                </svg>
+                                                Prev
                                             </button>
                                             <button
-                                                type="submit"
-                                                onClick={() => saveDraft()}
-                                                className="px-6 py-2 mt-6 mx-auto block bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all duration-300"
+                                                type="button"
+                                                onClick={handleNext}
+                                                className={`py-1 px-4 rounded-lg bg-white/10 backdrop-blur-lg text-white font-semibold hover:bg-white/20 transition-all duration-300 ease-in-out shadow-lg transform active:scale-95 border border-white/20`}
+                                                disabled={currentIndex === sections.length - 1}
                                             >
-                                                Save Draft
+                                                Next
+                                                <svg className="w-6 h-6 text-white ml-2 inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4-4m4 4-4 4" />
+                                                </svg>
                                             </button>
                                         </div>
+                                    </div>
+                                    <div>
+                                        {/* <button
+                                            type="submit"
+                                            className="btn mx-auto mt-2 w-48 h-14 rounded-full flex justify-center items-center gap-3 bg-gray-900 text-gray-400 hover:text-white hover:text-lg hover:bg-gradient-to-t hover:from-teal-400 hover:to-teal-600 hover:shadow-[inset_0px_1px_0px_0px_rgba(255,255,255,0.4),inset_0px_-4px_0px_0px_rgba(0,0,0,0.2),0px_0px_0px_4px_rgba(255,255,255,0.2),0px_0px_180px_0px_rgba(0,128,128,1)] transform transition-all duration-450 ease-in-out active:translate-y-0 hover:-translate-y-1"
+                                        >
+                                            <svg
+                                                height="24"
+                                                width="24"
+                                                fill="#AAAAAA"
+                                                viewBox="0 0 24 24"
+                                                className="sparkle transition-all duration-800 ease-in-out hover:fill-white"
+                                            >
+                                                <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
+                                            </svg>
+
+                                            <span className="text font-semibold">Generate</span>
+                                        </button> */}
+                                        <button type='submit' className="button_br mx-auto">
+                                            <div className="dots_border_br"></div>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                className="sparkle_br"
+                                            >
+                                                <path
+                                                    className="path_br"
+                                                    strokeLinejoin="round"
+                                                    strokeLinecap="round"
+                                                    stroke="black"
+                                                    fill="black"
+                                                    d="M14.187 8.096L15 5.25L15.813 8.096C16.0231 8.83114 16.4171 9.50062 16.9577 10.0413C17.4984 10.5819 18.1679 10.9759 18.903 11.186L21.75 12L18.904 12.813C18.1689 13.0231 17.4994 13.4171 16.9587 13.9577C16.4181 14.4984 16.0241 15.1679 15.814 15.903L15 18.75L14.187 15.904C13.9769 15.1689 13.5829 14.4994 13.0423 13.9587C12.5016 13.4181 11.8321 13.0241 11.097 12.814L8.25 12L11.096 11.187C11.8311 10.9769 12.5006 10.5829 13.0413 10.0423C13.5819 9.50162 13.9759 8.83214 14.186 8.097L14.187 8.096Z"
+                                                ></path>
+                                                <path
+                                                    className="path_br"
+                                                    strokeLinejoin="round"
+                                                    strokeLinecap="round"
+                                                    stroke="black"
+                                                    fill="black"
+                                                    d="M6 14.25L5.741 15.285C5.59267 15.8785 5.28579 16.4206 4.85319 16.8532C4.42059 17.2858 3.87853 17.5927 3.285 17.741L2.25 18L3.285 18.259C3.87853 18.4073 4.42059 18.7142 4.85319 19.1468C5.28579 19.5794 5.59267 20.1215 5.741 20.715L6 21.75L6.259 20.715C6.40725 20.1216 6.71398 19.5796 7.14639 19.147C7.5788 18.7144 8.12065 18.4075 8.714 18.259L9.75 18L8.714 17.741C8.12065 17.5925 7.5788 17.2856 7.14639 16.853C6.71398 16.4204 6.40725 15.8784 6.259 15.285L6 14.25Z"
+                                                ></path>
+                                                <path
+                                                    className="path_br"
+                                                    strokeLinejoin="round"
+                                                    strokeLinecap="round"
+                                                    stroke="black"
+                                                    fill="black"
+                                                    d="M6.5 4L6.303 4.5915C6.24777 4.75718 6.15472 4.90774 6.03123 5.03123C5.90774 5.15472 5.75718 5.24777 5.5915 5.303L5 5.5L5.5915 5.697C5.75718 5.75223 5.90774 5.84528 6.03123 5.96877C6.15472 6.09226 6.24777 6.24282 6.303 6.4085L6.5 7L6.697 6.4085C6.75223 6.24282 6.84528 6.09226 6.96877 5.96877C7.09226 5.84528 7.24282 5.75223 7.4085 5.697L8 5.5L7.4085 5.303C7.24282 5.24777 7.09226 5.15472 6.96877 5.03123C6.84528 4.90774 6.75223 4.75718 6.697 4.5915L6.5 4Z"
+                                                ></path>
+                                            </svg>
+                                            <span className="text_button_br font-bold">Build Resume</span>
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            onClick={() => saveDraft()}
+                                            className="px-6 py-2 mt-6 mx-auto block bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all duration-300"
+                                        >
+                                            Save Draft
+                                        </button>
                                     </div>
                                 </div>
-
                             </div>
+
                         </div>
+
                     </form>
                 </section>
             </>

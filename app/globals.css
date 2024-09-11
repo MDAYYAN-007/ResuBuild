@@ -22,3 +22,17 @@
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'Playpen Sans';
+    src: url('/fonts/PlaypenSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Balsamiq Sans';
+    src: url('/fonts/BalsamiqSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
