@@ -4,6 +4,8 @@ import { AiOutlineDownload, AiOutlineEdit, AiOutlineFileSearch } from 'react-ico
 import '@/components/Templates.css';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { FaDownload, FaEdit } from 'react-icons/fa';
+import { CiViewList } from 'react-icons/ci';
 
 const Template1 = (params) => {
 
@@ -23,27 +25,26 @@ const Template1 = (params) => {
                 <div className="flex gap-4 mx-auto p-8 justify-center mb-6 print:hidden max-xsm:flex-col max-xsm:w-max">
                     <Link
                         href={`/form/${id}`}
-                        className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-teal-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300"
+                        className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-teal-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300"
                     >
-                        <AiOutlineEdit className="text-lg" />
+                        <FaEdit className="text-lg mr-2" />
                         <span>Edit</span>
                     </Link>
                     <button
                         onClick={handleDownload}
-                        className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-purple-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-300"
+                        className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-purple-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-300"
                     >
-                        <AiOutlineDownload className="text-lg" />
+                        <FaDownload className="text-lg mr-2" />
                         <span>Download PDF</span>
                     </button>
                     <Link
                         href={"/my-resumes"}
-                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-indigo-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-indigo-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
                     >
-                        <AiOutlineFileSearch className="text-lg" />
+                        <CiViewList className="text-lg mr-2" />
                         <span>View Resumes</span>
                     </Link>
                 </div>
-
 
                 <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0">
                     {/* Header */}

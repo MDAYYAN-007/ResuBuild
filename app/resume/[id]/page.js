@@ -23,8 +23,10 @@ const ResumePage = ({ params }) => {
                 setFormData(currentResume.formData);
                 const templateId = currentResume.formData.template;
                 setTempid(templateId);
+            } else if (currentResume) {
+                router.push(`/form/${id}`);
             } else {
-                router.push('/my-resumes?message=No resume found');
+                router.push('/my-resumes');    
             }
         } catch (error) {
             console.error('Error fetching resume data:', error);

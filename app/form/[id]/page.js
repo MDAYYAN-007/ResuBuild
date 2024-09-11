@@ -55,6 +55,7 @@ const UserForm = ({ params }) => {
             template: ''
         }
     });
+    const { getValues } = useForm();
 
     const router = useRouter();
     const id = params.id;
@@ -68,7 +69,6 @@ const UserForm = ({ params }) => {
                     const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
 
                     const currentResume = existingResumes.find(resume => resume.id === id);
-
                     if (!currentResume) {
                         router.push('/my-resumes');
                     } else if (currentResume.formData) {
@@ -152,10 +152,11 @@ const UserForm = ({ params }) => {
     const currentIndex = sections.indexOf(activeSection);
 
     const saveDraft = (data) => {
-        if (!data.template) {
-            data.template = 1;
-        }
         const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
+        const currentResume = existingResumes.find(resume => resume.id === id);
+        if (!data.template) {
+            data.template = currentResume?.formData?.template || 1;
+        }
         const updatedResumes = existingResumes.map(resume =>
             resume.id === id ? { ...resume, formData: data } : resume
         );
@@ -164,10 +165,11 @@ const UserForm = ({ params }) => {
     };
 
     const onSubmit = (data) => {
-        if (!data.template) {
-            data.template = 1;
-        }
         const existingResumes = JSON.parse(localStorage.getItem('resumes')) || [];
+        const currentResume = existingResumes.find(resume => resume.id === id);
+        if (!data.template) {
+            data.template = currentResume?.formData?.template || 1;
+        }
         const updatedResumes = existingResumes.map(resume =>
             resume.id === id ? { ...resume, formData: data } : resume
         );
@@ -655,22 +657,6 @@ const UserForm = ({ params }) => {
                                         </div>
                                     </div>
                                     <div>
-                                        {/* <button
-                                            type="submit"
-                                            className="btn mx-auto mt-2 w-48 h-14 rounded-full flex justify-center items-center gap-3 bg-gray-900 text-gray-400 hover:text-white hover:text-lg hover:bg-gradient-to-t hover:from-teal-400 hover:to-teal-600 hover:shadow-[inset_0px_1px_0px_0px_rgba(255,255,255,0.4),inset_0px_-4px_0px_0px_rgba(0,0,0,0.2),0px_0px_0px_4px_rgba(255,255,255,0.2),0px_0px_180px_0px_rgba(0,128,128,1)] transform transition-all duration-450 ease-in-out active:translate-y-0 hover:-translate-y-1"
-                                        >
-                                            <svg
-                                                height="24"
-                                                width="24"
-                                                fill="#AAAAAA"
-                                                viewBox="0 0 24 24"
-                                                className="sparkle transition-all duration-800 ease-in-out hover:fill-white"
-                                            >
-                                                <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
-                                            </svg>
-
-                                            <span className="text font-semibold">Generate</span>
-                                        </button> */}
                                         <button type='submit' className="button_br mx-auto">
                                             <div className="dots_border_br"></div>
                                             <svg
@@ -707,8 +693,8 @@ const UserForm = ({ params }) => {
                                             <span className="text_button_br font-bold">Build Resume</span>
                                         </button>
                                         <button
-                                            type="submit"
-                                            onClick={() => saveDraft()}
+                                            type="button"
+                                            onClick={() => saveDraft(getValues())}
                                             className="px-6 py-2 mt-6 mx-auto block bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all duration-300"
                                         >
                                             Save Draft

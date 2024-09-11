@@ -25,23 +25,23 @@ const Template2 = (params) => {
                 <div className="flex gap-4 mx-auto p-8 justify-center mb-6 print:hidden max-xsm:flex-col max-xsm:w-max">
                     <Link
                         href={`/form/${id}`}
-                        className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-teal-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300"
+                        className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-teal-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300"
                     >
-                        <FaEdit className="text-lg" />
+                        <FaEdit className="text-lg mr-2" />
                         <span>Edit</span>
                     </Link>
                     <button
                         onClick={handleDownload}
-                        className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-purple-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-300"
+                        className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-purple-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-300"
                     >
                         <FaDownload className="text-lg mr-2" />
                         <span>Download PDF</span>
                     </button>
                     <Link
                         href={"/my-resumes"}
-                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center transition-transform transform hover:scale-105 hover:bg-indigo-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-indigo-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
                     >
-                        <CiViewList className="text-lg" />
+                        <CiViewList className="text-lg mr-2" />
                         <span>View Resumes</span>
                     </Link>
                 </div>
@@ -76,7 +76,7 @@ const Template2 = (params) => {
                         {/* Left Section (4/10) */}
                         <div className="w-2/5">
                             {/* Education */}
-                            {education && education.length > 0 && (
+                            {education && education.some(edu => edu.course) && (
                                 <div className="mb-4">
                                     <h2 className="text-2xl font-bold text-teal-600 font-playpen">Education</h2>
                                     {education.map((edu, index) => (
@@ -90,7 +90,7 @@ const Template2 = (params) => {
                             )}
 
                             {/* Certifications */}
-                            {certifications && certifications.length > 0 && (
+                            {certifications && certifications.some(cert => cert.name) && (
                                 <div className="mb-4">
                                     <h2 className="text-2xl font-bold text-teal-600 font-playpen">Certifications</h2>
                                     {certifications.map((cert, index) => (
@@ -103,45 +103,51 @@ const Template2 = (params) => {
                             )}
 
                             {/* Skills */}
-                            {skills && skills.length > 0 && (
-                                <div className="mb-4">
-                                    <h2 className="text-2xl font-bold text-teal-600 font-playpen">Skills</h2>
-                                    <div className="overflow-x-auto">
-                                        <table className="min-w-full table-auto">
-                                            <thead>
-                                                <tr>
-                                                    <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Category</th>
-                                                    <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Skills</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {skills.map((skillCategory, index) => (
-                                                    <tr key={index} className="border-t">
-                                                        <td className="px-4 py-2 font-semibold font-balsamiq">{skillCategory.category}</td>
-                                                        <td className="px-4 py-2">
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {skillCategory.skills.map((skill, idx) => (
-                                                                    <span
-                                                                        key={idx}
-                                                                        className="inline-block bg-gray-100 text-black px-2 py-1 rounded-lg font-crimson text-sm"
-                                                                    >
-                                                                        {skill}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                        </td>
+                            {skills && skills.some(skillCategory =>
+                                skillCategory.skills.some(skill => skill.trim() !== '')
+                            ) && (
+                                    <div className="mb-4">
+                                        <h2 className="text-2xl font-bold text-teal-600 font-playpen">Skills</h2>
+                                        <div className="overflow-x-auto">
+                                            <table className="min-w-full table-auto">
+                                                <thead>
+                                                    <tr>
+                                                        <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Category</th>
+                                                        <th className="px-4 py-2 text-left font-balsamiq text-teal-600">Skills</th>
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    {skills.map((skillCategory, index) => (
+                                                        skillCategory.skills.some(skill => skill.trim() !== '') && ( // Only render if there are non-empty skills
+                                                            <tr key={index} className="border-t">
+                                                                <td className="px-4 py-2 font-semibold font-balsamiq">{skillCategory.category}</td>
+                                                                <td className="px-4 py-2">
+                                                                    <div className="flex flex-wrap gap-2">
+                                                                        {skillCategory.skills.map((skill, idx) => (
+                                                                            skill.trim() !== '' && ( // Only display non-empty skills
+                                                                                <span
+                                                                                    key={idx}
+                                                                                    className="inline-block bg-gray-100 text-black px-2 py-1 rounded-lg font-crimson text-sm"
+                                                                                >
+                                                                                    {skill}
+                                                                                </span>
+                                                                            )
+                                                                        ))}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
                         </div>
                         {/* Right Section (6/10) */}
                         <div className="w-3/5">
                             {/* Experience */}
-                            {experience && experience.length > 0 && (
+                            {experience && experience.some(exp => exp.jobTitle) && (
                                 <div className="mb-4">
                                     <h2 className="text-2xl font-bold text-teal-600 font-playpen">Experience</h2>
                                     {experience.map((exp, index) => (
@@ -156,7 +162,7 @@ const Template2 = (params) => {
                             )}
 
                             {/* Projects */}
-                            {projects && projects.length > 0 && (
+                            {projects && projects.some(proj => proj.name) && (
                                 <div className="mb-4">
                                     <h2 className="text-2xl font-bold text-teal-600 font-playpen">Projects</h2>
                                     {projects.map((project, index) => (
