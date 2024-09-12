@@ -42,9 +42,6 @@ const ResumePage = ({ params }) => {
 
     const handleDownload = () => {
         window.print();
-        toast.success('PDF downloaded successfully!', {
-            duration: 3000,
-        });
     };
 
     const templateComponents = {
