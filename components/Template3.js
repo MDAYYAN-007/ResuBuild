@@ -1,49 +1,15 @@
 'use client';
 import React from 'react';
-import { FaDownload, FaEdit, FaPhoneAlt } from 'react-icons/fa';
+import { FaPhoneAlt } from 'react-icons/fa';
 import { IoMail } from 'react-icons/io5';
-import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import { CiViewList } from 'react-icons/ci';
 
 const Template3 = (params) => {
-    const id = params.id;
+    
     const formData = params.formData;
     const { profile, education, experience, projects, certifications, skills } = formData;
 
-    const handleDownload = () => {
-        window.print();
-    };
-
     return (
         <>
-            <Navbar />
-            <section className='mt-[70px] pb-28 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 print:mt-0 print:pb-0 print:bg-gradient-to-r print:from-white print:via-white print:to-white'
-                style={{ minHeight: "calc(100vh - 70px)" }}
-            >
-                <div className="flex gap-4 mx-auto p-8 justify-center mb-6 print:hidden max-xsm:flex-col max-xsm:w-max">
-                    <Link
-                        href={`/form/${id}`}
-                        className="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-teal-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300"
-                    >
-                        <FaEdit className="text-lg mr-2" />
-                        <span>Edit</span>
-                    </Link>
-                    <button
-                        onClick={handleDownload}
-                        className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-purple-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-300"
-                    >
-                        <FaDownload className="text-lg mr-2" />
-                        <span>Download PDF</span>
-                    </button>
-                    <Link
-                        href={"/my-resumes"}
-                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-transform transform hover:scale-105 hover:bg-indigo-700 hover:shadow-lg active:scale-95 active:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                    >
-                        <CiViewList className="text-lg mr-2" />
-                        <span>View Resumes</span>
-                    </Link>
-                </div>
                 <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-auto">
                     <div className="grid grid-cols-12 gap-6">
                         {/* Sidebar (3/12) */}
@@ -176,7 +142,6 @@ const Template3 = (params) => {
                         </div>
                     </div>
                 </div>
-            </section >
         </>
     );
 };
