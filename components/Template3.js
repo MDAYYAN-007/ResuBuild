@@ -44,7 +44,7 @@ const Template3 = (params) => {
                         <span>View Resumes</span>
                     </Link>
                 </div>
-                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-scroll">
+                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-auto">
                     <div className="grid grid-cols-12 gap-6">
                         {/* Sidebar (3/12) */}
                         <aside className="col-span-4 bg-gray-100 p-6 rounded-lg">

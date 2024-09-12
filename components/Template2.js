@@ -46,7 +46,7 @@ const Template2 = (params) => {
                     </Link>
                 </div>
 
-                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-scroll">
+                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-auto">
                     {/* Header Section */}
                     {profile && (
                         <header className="mb-8">

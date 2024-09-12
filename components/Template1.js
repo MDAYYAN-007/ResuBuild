@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import { AiOutlineDownload, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
 import '@/components/Templates.css';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
@@ -46,7 +45,7 @@ const Template1 = (params) => {
                     </Link>
                 </div>
 
-                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-scroll">
+                <div className="max-w-[793px] mx-auto bg-white p-8 relative print:p-0 overflow-x-auto">
                     {/* Header */}
                     <header className="mb-6 text-center">
                         <h1 className="text-4xl font-bold font-noto">{formData?.profile?.name}</h1>

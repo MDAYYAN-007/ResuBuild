@@ -2,8 +2,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import { useRouter } from 'next/navigation';
 import { FiEye, FiEdit, FiTrash2 } from 'react-icons/fi'; // Import icons
+import Loading from '@/components/Loading';
+import toast, { Toaster } from 'react-hot-toast';
 
 const ResumeDashboard = () => {
     const [resumes, setResumes] = useState([]);
@@ -11,8 +12,8 @@ const ResumeDashboard = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingResumeId, setEditingResumeId] = useState(null);
     const [resumeName, setResumeName] = useState('');
-    const router = useRouter();
-    const modalRef = useRef(null); // Reference for modals
+    const [loading, setLoading] = useState(true)
+    const modalRef = useRef(null);
 
     useEffect(() => {
         try {
@@ -22,11 +23,14 @@ const ResumeDashboard = () => {
             }
         } catch (error) {
             console.error("Failed to load resumes from local storage", error);
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
         }
     }, []);
 
     useEffect(() => {
-        // Close modals if clicking outside of them
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
                 setIsCreateModalOpen(false);
@@ -45,31 +49,33 @@ const ResumeDashboard = () => {
     const handleCreateResume = () => {
         const id = Date.now().toString();
         const newResume = { id, name: resumeName };
-
+    
         const updatedResumes = [...resumes, newResume];
         localStorage.setItem('resumes', JSON.stringify(updatedResumes));
-
+    
         setResumes(updatedResumes);
-        router.push(`/form/${id}`);
         setIsCreateModalOpen(false);
         setResumeName('');
-    };
+    
+        toast.success('Resume created successfully!');
+    };    
 
     const handleDeleteResume = (id) => {
         const isConfirmed = window.confirm('Are you sure you want to delete this resume?');
-    
+
         if (isConfirmed) {
             const updatedResumes = resumes.filter(resume => resume.id !== id);
             localStorage.setItem('resumes', JSON.stringify(updatedResumes));
             setResumes(updatedResumes);
+            toast.error('Resume deleted successfully!');
         }
     };
-    
+
 
     const handleEditResume = (id) => {
         setEditingResumeId(id);
         setResumeName(resumes.find(resume => resume.id === id)?.name || '');
-        setIsEditModalOpen(true);
+        setIsEditModalOpen(true);        
     };
 
     const handleSaveEdit = () => {
@@ -81,11 +87,17 @@ const ResumeDashboard = () => {
         setIsEditModalOpen(false);
         setEditingResumeId(null);
         setResumeName('');
+        toast.success('Resume renamed successfully!');
     };
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <>
             <Navbar />
+            <Toaster/>
             <section className='py-8 h-max bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-100 flex flex-col items-center justify-center mt-[70px] px-4'
                 style={{ minHeight: "calc(100vh - 70px)" }}
             >
