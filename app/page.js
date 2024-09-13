@@ -21,7 +21,7 @@ export default function Home() {
               and get a polished resume ready to download. It&apos;s quick, simple, and hassle-free!
             </p>
             <Link
-              href="/introduction"
+              href="/my-resumes"
               className="relative px-6 py-3 md:px-8 md:py-4 bg-teal-600 text-white font-semibold text-base md:text-lg rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out flex items-center overflow-hidden"
             >
               <span className="relative z-10">Get Started</span>

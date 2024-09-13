@@ -140,7 +140,7 @@ const ResumeDashboard = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p className="text-gray-400 text-center">No resumes found. Create a new one!</p>
+                        <p className="text-gray-400 text-center">Get started. Create a new resume!</p>
                     )}
                 </div>
             </section>
