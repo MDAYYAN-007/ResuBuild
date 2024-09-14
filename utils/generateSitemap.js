@@ -1,13 +1,13 @@
+"use server"
 import { sql } from '@vercel/postgres';
 import fs from 'fs';
 import path from 'path';
 
 async function generateSitemap() {
   try {
-    // Fetch resume IDs from the PostgreSQL database
+    
     const { rows: ids } = await sql`SELECT id FROM resumes`;
 
-    // Define static pages
     const staticPages = [
       { loc: 'https://resu-build.vercel.app/', priority: '1.0' },
       { loc: 'https://resu-build.vercel.app/my-resumes', priority: '0.8' },
@@ -32,7 +32,7 @@ async function generateSitemap() {
     <priority>${url.priority}</priority>
   </url>`).join('')}
 </urlset>
-    `;
+  `;
 
     // Write the sitemap to the public directory
     fs.writeFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), sitemap.trim());
