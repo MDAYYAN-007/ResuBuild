@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "node utils/generateSitemap.js"
+    "postbuild": "node utils/generateSitemap.mjs"
   },
   "dependencies": {
     "@vercel/postgres": "^0.10.0",
