@@ -1,0 +1,9 @@
+# robots.txt for https://resu-build.vercel.app/
+
+# Allow all web crawlers access to everything
+User-agent: *
+Disallow:
+
+# Sitemap location
+Sitemap: https://resu-build.vercel.app/sitemap.xml
+
