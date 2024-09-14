@@ -12,7 +12,7 @@ export default function Home() {
       >
         <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto px-4 md:px-8">
           <div className="flex-1 flex flex-col justify-center items-start py-4 px-8 md:px-8 lg:px-16">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 tracking-wide text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 tracking-wide text-white text-center">
               Welcome to <span className="text-teal-400">ResuBuild</span>
             </h1>
             <p className="text-base md:text-lg mb-8 max-w-sm md:max-w-md lg:max-w-lg text-gray-300">
