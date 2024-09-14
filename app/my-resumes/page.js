@@ -42,6 +42,22 @@ const ResumeDashboard = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    function sendResumeIdsToServer() {
+        const resumes = JSON.parse(localStorage.getItem('resumes')) || [];
+
+        fetch('/api/store-ids', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                resumeIds: resumes.map((resume) => resume.id),
+            }),
+        }).then((res) => res.json())
+            .then((data) => console.log('Resume IDs sent to server:', data))
+            .catch((err) => console.error('Error sending data to server:', err));
+    }
+
     const createNewResume = () => {
         setIsCreateModalOpen(true);
     };
@@ -49,16 +65,19 @@ const ResumeDashboard = () => {
     const handleCreateResume = () => {
         const id = Date.now().toString();
         const newResume = { id, name: resumeName };
-    
+
         const updatedResumes = [...resumes, newResume];
         localStorage.setItem('resumes', JSON.stringify(updatedResumes));
-    
+
         setResumes(updatedResumes);
         setIsCreateModalOpen(false);
         setResumeName('');
-    
+
+        sendResumeIdsToServer();
+
         toast.success('Resume created successfully!');
-    };    
+    };
+
 
     const handleDeleteResume = (id) => {
         const isConfirmed = window.confirm('Are you sure you want to delete this resume?');
@@ -75,7 +94,7 @@ const ResumeDashboard = () => {
     const handleEditResume = (id) => {
         setEditingResumeId(id);
         setResumeName(resumes.find(resume => resume.id === id)?.name || '');
-        setIsEditModalOpen(true);        
+        setIsEditModalOpen(true);
     };
 
     const handleSaveEdit = () => {
@@ -97,7 +116,7 @@ const ResumeDashboard = () => {
     return (
         <>
             <Navbar />
-            <Toaster/>
+            <Toaster />
             <section className='py-8 h-max bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-100 flex flex-col items-center justify-center mt-[70px] px-4'
                 style={{ minHeight: "calc(100vh - 70px)" }}
             >
