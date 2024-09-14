@@ -1,13 +1,13 @@
-"use server"
-import { sql } from '@vercel/postgres';
-import fs from 'fs';
-import path from 'path';
+const { sql } = require('@vercel/postgres');
+const fs = require('fs');
+const path = require('path');
 
 async function generateSitemap() {
   try {
-    
+    // Fetch resume IDs from the PostgreSQL database
     const { rows: ids } = await sql`SELECT id FROM resumes`;
 
+    // Define static pages
     const staticPages = [
       { loc: 'https://resu-build.vercel.app/', priority: '1.0' },
       { loc: 'https://resu-build.vercel.app/my-resumes', priority: '0.8' },
@@ -41,4 +41,4 @@ async function generateSitemap() {
   }
 }
 
-export default generateSitemap;
+generateSitemap();

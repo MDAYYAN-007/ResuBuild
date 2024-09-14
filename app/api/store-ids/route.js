@@ -1,9 +1,7 @@
-"use server"
-import { sql } from '@vercel/postgres';
+const { sql } = require('@vercel/postgres');
 
 export async function POST(req) {
   try {
-    
     const { resumeIds } = await req.json();
 
     const insertPromises = resumeIds.map(id =>
@@ -12,7 +10,6 @@ export async function POST(req) {
     await Promise.all(insertPromises);
 
     const { rows } = await sql`SELECT id FROM resumes`;
-
 
     return new Response(
       JSON.stringify({ message: 'Resume IDs stored', storedResumeIds: rows }),
