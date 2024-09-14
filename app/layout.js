@@ -15,7 +15,7 @@ export const metadata = {
     url: 'https://resu-build.vercel.app/',
     images: [
       {
-        url: 'https://resu-build.vercel.app/images/og-image.png',
+        url: 'https://resu-build.vercel.app/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Resume Builder',
