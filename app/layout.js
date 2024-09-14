@@ -3,7 +3,7 @@ import "./globals.css";
 export const metadata = {
   title: 'Resume Builder - Create and Manage Your Resumes Easily',
   description: 'Effortlessly create, manage, and customize your resumes with our Resume Builder. Design professional resumes tailored to your needs with our intuitive platform.',
-  keywords: 'Resume Builder, create resumes, manage resumes, resume design, professional resumes, resume management, Next.js, React',
+  keywords: 'Resume Builder, create resumes, manage resumes, resume design, professional resumes, make resumes, build resumes, resume management, Next.js, React',
   robots: {
     index: true,
     follow: true,
